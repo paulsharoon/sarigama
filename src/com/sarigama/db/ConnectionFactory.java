@@ -3,10 +3,7 @@ package com.sarigama.db ;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- * Connect to Database
- * @author sharoonpaul808@gmail.com
- */
+
 public class ConnectionFactory {
     public static final String URL = "jdbc:mysql://localhost:3306/testdb";
     public static final String USER = "testuser";
