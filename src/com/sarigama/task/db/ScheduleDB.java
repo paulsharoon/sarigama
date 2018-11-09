@@ -1,13 +1,12 @@
 package com.sarigama.task.db;
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import com.sarigama.db.ConnectionFactory ;
 
 import com.sarigama.task.db.tables.RecuringTaskConfig;
 import com.sarigama.task.db.tables.ScheduleDetails;
@@ -18,39 +17,8 @@ import com.sarigama.task.db.tables.TaskConfigStart;
 import com.sarigama.task.db.tables.TaskDetails;
 
 
-public class ScheduleDB  //extends DatabaseAbstract 
+public class ScheduleDB extends ConnectionFactory 
 {
-
-
-    protected Connection connection = null;
-    public final void getConnection() throws Exception
-	{
-        try{
-       	if (connection == null) 
-		{
-            Class.forName("com.mysql.jdbc.Driver");  
-            connection = DriverManager.getConnection( "jdbc:mysql://localhost:3306/APERTAINDB??characterEncoding=UTF-8&amp;allowMultiQueries=true&amp;sessionVariables=sql_mode=''","aptappuser","s932kjkl@tech2k12apt932k");
-        }
-        }catch(Exception e)
-        {
-            //logger.error(e.getMessage(), e);
-        }
-    }
-
-    public final void finalize()
-	{
-		try
-		{
-			if(connection != null || connection.isClosed() == false)
-			{
-				connection.close(); connection = null;
-			}
- 	    }
-		catch(SQLException e)
-		{
-			//logger.error(e.getMessage(), e);
-		}
-    }
 
     public boolean addSchedule( ScheduleDetails scheduleDetails){
         boolean toRet = false ;
