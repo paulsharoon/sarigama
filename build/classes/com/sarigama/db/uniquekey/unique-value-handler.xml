@@ -1,0 +1,16 @@
+<?xml version = "1.0"?>
+<unique-value-configuration>
+
+    <table name="TEST1">
+        <unique-value-column>ID</unique-value-column>
+    </table>
+
+    <table name="TEST2">
+        <unique-value-column>ID</unique-value-column>
+    </table>
+
+    <table name="TEST3">
+        <unique-value-column>ID</unique-value-column>
+    </table>
+
+</unique-value-configuration>
