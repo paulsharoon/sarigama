@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>MIMS</title>
+  <title>sariGaMa</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" name="viewport">
   <script type="text/javascript">
@@ -18,8 +18,12 @@
 
 <!-- <ui-view></ui-view> -->
 
-<script src="app/bower_components/angular/angular.min.js"></script>
-<script src="app/app.js"></script>
+<script src="chatUI/resources/static/bower_components/angular/angular.min.js"></script>
+<script src="chatUI/resources/static/app/app.js"></script>
+<script src="chatUI/resources/static/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="chatUI/resources/static/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<ui-view>
+</ui-view>
 </body>
 </html>
 

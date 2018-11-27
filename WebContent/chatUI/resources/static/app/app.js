@@ -5,7 +5,7 @@ app.constant('urlRoutePrefix',contextPath);
 app.config(['$stateProvider', '$urlRouterProvider', 
     function($stateProvider, $urlRouterProvider) {
 
-$urlRouterProvider.otherwise('/signin');
+//$urlRouterProvider.otherwise('/signin');
 
 $stateProvider
 	.state('demoPage', {
