@@ -196,3 +196,9 @@ SET NEXT_RECURING_TIME = ?
 , EXCECUTED_STATUS = ? 
 , UPDATED_TIME = ?
 WHERE SCHEDULE_ID = ?
+
+select a_user.user_id , a_user.user_name , a_user.email , a_user.live ,
+    a_security.auth_salt , a_security.USER_EMAIL_UNIQUE_TOKEN , a_identification.IDENTIFICATION_KEY
+    from a_user left join a_security on a_user.user_id = a_security.user_id 
+    left join  a_identification on a_user.user_id = a_identification.user_id 
+    where a_user.user_name = "sharoonpaul808@gmail.com" and a_identification.is_live = 1 ;

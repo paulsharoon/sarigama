@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
     public static final String URL = "jdbc:mysql://localhost:3306/sarigama?useSSL=false";
-    public static final String USER = "";
-    public static final String PASS = "";
+    public static final String USER = "sharoon";
+    public static final String PASS = "sharoon";
 
     /**
      * Get a connection to database
@@ -50,7 +50,7 @@ public class ConnectionFactory {
         connectionFactory.getConnection() ;
 
         DatabaseMetaData meta = connectionFactory.connection.getMetaData();
-        ResultSet res = meta.getTables(null, null, "TABLE3",  new String[] {"TABLE"});
+        ResultSet res = meta.getTables(null, null, "A_USER",  new String[] {"TABLE"});
         if (res.next()) {
             System.out.println(
                 "   "+res.getString("TABLE_CAT") 

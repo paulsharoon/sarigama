@@ -12,7 +12,7 @@ import com.sarigama.db.uniquekey.exception.UniqueKeyException;
 
 public class UniqueValueGenerator extends ConnectionFactory  {
 
-    public void checkTablePresent(HashMap result , HashSet<String> tables ) throws UniqueKeyException 
+    public HashMap checkTablePresent(HashMap result , HashSet<String> tables ) throws UniqueKeyException 
     {
         PreparedStatement prepStatement = null;
         ResultSet resultSet = null ;
@@ -38,6 +38,7 @@ public class UniqueValueGenerator extends ConnectionFactory  {
                 }
             }
 
+
         } catch (Exception e) {
             throw new UniqueKeyException( e.getMessage()) ;
         }finally{
@@ -49,13 +50,15 @@ public class UniqueValueGenerator extends ConnectionFactory  {
 
             }
         }
+
+        return result ;
     }
 
-    public void generateUniqueKey(HashMap<String,HashMap<String,Long>> newUniqueColumn , HashMap<String , String > columnMap  )  throws UniqueKeyException 
+    public HashMap generateUniqueKey(HashMap<String,HashMap<String,Long>> newUniqueColumn , HashMap<String , String > columnMap  )  throws UniqueKeyException 
     { 
         PreparedStatement prepStatement = null;
         ResultSet resultSet = null ;
-        Long uniqueID = new Long(1);
+        Long uniqueID = new Long(0);
         try {
             String sqlString = "SELECT MAX( PRIMARY_COLUMN ) UNIQUE_ID FROM TABLE_NAME ;" ;
             this.getConnection();
@@ -93,6 +96,8 @@ public class UniqueValueGenerator extends ConnectionFactory  {
 
             }
         }
+
+        return newUniqueColumn ;
     }
 
 }
