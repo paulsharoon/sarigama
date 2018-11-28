@@ -1,1 +1,43 @@
-<h1>{{demo}}</h1>
+<!-- <div>
+<h1 class="animated bounce slower-3s">{{demo}}</h1>
+</div> -->
+<section class="login-block">
+    <div class="container">
+	<div class="row">
+	
+		<div class="col-md-8 banner-sec">
+		<div class="jumbotron ">
+    <h2 class="display-3">sariGaMa</h2>
+    <h3 class=" h1login animated lightSpeedIn ">Vitality for Text</h3>
+  </div>
+  <div class="logcontainer" style="background-image: url('chatUI/resources/static/images/chatGif.gif'); background-position: center;background-repeat: no-repeat; background-size: 25%;height: 85px;">
+      
+      </div>
+	</div>
+		<div class="col-md-4 login-sec">
+		    <h2 class="text-center">Login Now</h2>
+		    <form name="SGMloginForm" class="login-form">
+  <div class="form-group">
+    <label for="exampleInputEmail1" >Username</label>
+    <input type="text" name="SGMloginForm.userName" ng-model="userName" class="form-control" placeholder="">
+    
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1" >Password</label>
+    <input type="password"  name="SGMloginForm.passWord" ng-model="passWord" class="form-control" placeholder="">
+  </div>
+  
+  
+    <div class="form-check">
+    <label class="form-check-label">
+      <input type="checkbox" class="form-check-input">
+      <small>Remember Me</small>
+    </label>
+    <button type="submit" class="btn btn-login float-right" ng-click="loginCall(userName,passWord)">Submit</button>
+  </div>
+  
+</form>
+<div class="copy-text">Created with <i class="fa fa-heart"></i> by <a href="http://grafreez.com">sarigama</a></div>
+		</div>
+</div>
+</section>

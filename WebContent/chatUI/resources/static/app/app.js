@@ -1,17 +1,18 @@
-var app =angular.module('sariGaMa,'['ui-router','ngsanitize']);
+var app =angular.module('sariGaMa',["ui.router"]);
 
-
-app.constant('urlRoutePrefix',contextPath);
+ app.constant('protocal','http');
+ app.constant('protocalport','localhost:8090');
+//app.constant('urlRoutePrefix',contextPath);
 app.config(['$stateProvider', '$urlRouterProvider', 
     function($stateProvider, $urlRouterProvider) {
 
-//$urlRouterProvider.otherwise('/signin');
+$urlRouterProvider.otherwise('/demoPage');
 
 $stateProvider
 	.state('demoPage', {
 		cache:false,
-		url: '/demopage',
-		templateUrl:'pages/demo/demo.html',
+		url: '/demoPage',
+		templateUrl:'chatUI/resources/static/pages/demo/demo.html',
 		controller:'demoCtrl'
 	})
 
