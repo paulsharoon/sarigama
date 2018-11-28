@@ -1,16 +1,20 @@
 <?xml version = "1.0"?>
 <unique-value-configuration>
 
-    <table name="TEST1">
-        <unique-value-column>ID</unique-value-column>
+    <table name="A_USER">
+        <unique-value-column>USER_ID</unique-value-column>
     </table>
 
-    <table name="TEST2">
-        <unique-value-column>ID</unique-value-column>
+    <table name="A_SECURITY">
+        <unique-value-column>AUTH_ID</unique-value-column>
     </table>
 
-    <table name="TEST3">
-        <unique-value-column>ID</unique-value-column>
+    <table name="A_IDENTIFICATION">
+        <unique-value-column>IDENTIFICATION_ID</unique-value-column>
+    </table>
+
+    <table name="A_USER_PROFILE">
+        <unique-value-column>PROFILE_ID</unique-value-column>
     </table>
 
 </unique-value-configuration>

@@ -1,6 +1,7 @@
 package com.sarigama.db.uniquekey;
 
 
+import java.io.File;
 import java.util.HashMap;
 
 import com.sarigama.db.uniquekey.UniqueValueConfigurationParser;
@@ -10,7 +11,9 @@ public class UniqueValueContainer {
 
     public static String serverPath = "" ;
     public static String configPath = "" ;
-    public static String filePath = "E:\\Eclipse\\sarigama\\sarigama\\src\\com\\sarigama\\db\\uniquekey\\" ;
+   public static String filePath = "E:\\Eclipse\\sarigama\\sarigama\\src\\com\\sarigama\\db\\uniquekey" ;
+    //public static String tomcatDirectory = System.getProperty("catalina.base");
+    //public static String filePath = File.separator +  "src" + File.separator + "com" + File.separator + "sarigama" + File.separator + "db" + File.separator + "uniquekey" ;
     public static String fileName = "unique-value-handler.xml" ;
     public static UniqueValueConfigurationParser tableDetails ; 
 
@@ -19,7 +22,7 @@ public class UniqueValueContainer {
 
     static {
         try {
-            tableDetails = new UniqueValueConfigurationParser( filePath + fileName ) ;
+            tableDetails = new UniqueValueConfigurationParser( filePath +  File.separator + fileName ) ;
             uniqeKeys = new HashMap();
             generateUniqueIdentifier();
         } catch (Exception e) {
@@ -29,8 +32,8 @@ public class UniqueValueContainer {
 
     public static void generateUniqueIdentifier() throws Exception , UniqueKeyException {
         UniqueValueGenerator uniqueValueGenerator = new UniqueValueGenerator() ;
-        uniqueValueGenerator.checkTablePresent( uniqeKeys  , tableDetails.getTables() );
-        uniqueValueGenerator.generateUniqueKey( uniqeKeys , tableDetails.getTableWithUniqueKeyColoumn() );
+        uniqeKeys = uniqueValueGenerator.checkTablePresent( uniqeKeys  , tableDetails.getTables() );
+        uniqeKeys = uniqueValueGenerator.generateUniqueKey( uniqeKeys , tableDetails.getTableWithUniqueKeyColoumn() );
     }
 
     public static synchronized Long getNextUniqueValue(String tableName) throws UniqueKeyException {

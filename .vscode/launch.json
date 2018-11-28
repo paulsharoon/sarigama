@@ -1,0 +1,102 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch)",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-ConnectionFactory<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.db.ConnectionFactory",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-UniqueValueConfigurationParser<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.db.uniquekey.UniqueValueConfigurationParser",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-UniqueValueContainer<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.db.uniquekey.UniqueValueContainer",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-ScheduleEngine<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.task.ScheduleEngine",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-TaskEngine<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.task.TaskEngine",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-TaskRunnable<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.task.TaskRunnable",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-TaskDB<sarigama>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "com.sarigama.task.db.TaskDB",
+            "args": "",
+            "projectName": "sarigama"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Attach)",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": "<debug port of remote debuggee>"
+        }
+    ]
+}
