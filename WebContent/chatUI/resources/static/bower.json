@@ -1,0 +1,26 @@
+{
+  "name": "sarigamachat",
+  "homepage": "https://github.com/paulsharoon/sarigama",
+  "authors": [
+    "balavikraman.p <balavikraman.p@abyantra.com>"
+  ],
+  "description": "Chat App",
+  "main": "index.html",
+  "keywords": [
+    "css",
+    "js",
+    "html",
+    "template",
+    "bootstrap",
+    "theme"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
