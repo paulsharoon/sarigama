@@ -1,13 +1,16 @@
 package com.sarigama.security.authentication;
 
 import java.security.spec.InvalidKeySpecException;
-import java.util.Base64;
 
+import com.sarigama.db.exception.DBException;
+import com.sarigama.security.authentication.data.AuthenticationToken;
 import com.sarigama.security.authentication.exception.AuthenticationException;
 import com.sarigama.security.authentication.exception.UserServiceException;
 import com.sarigama.security.authentication.utill.AuthenticationUtil;
 import com.sarigama.security.dto.UserProfileDto;
+import com.sarigama.security.entity.UserAuthToken;
 import com.sarigama.security.entity.UserProfileEntity;
+import com.sarigama.utils.DateUtil;
 
 public class AuthenticationService {
 
@@ -17,36 +20,31 @@ public class AuthenticationService {
         this.authenticationUtil = new AuthenticationUtil() ;
     }
 
-    public UserProfileDto authenticate(String userName, String userPassword) throws AuthenticationException , Exception{
+    public AuthenticationToken authenticate(String userName, String userPassword) throws AuthenticationException , DBException , UserServiceException
+    {
         UserProfileDto userProfile = new UserProfileDto();
-        UserProfileEntity userEntity = userProfile.getUserProfile(userName); // User name must be unique in our system
-        // Here we perform authentication business logic
-        // If authentication fails, we throw new AuthenticationException
-        // other wise we return UserProfile Details
+        userProfile.getUserProfile(userName); 
         String secureUserPassword = null;
         try {
-            secureUserPassword = authenticationUtil.generateSecurePassword(userPassword, userEntity.getSalt());
+            secureUserPassword = authenticationUtil.generateSecurePassword(userPassword, userProfile.getSalt());
         } catch (InvalidKeySpecException ex) {
-            // Logger.getLogger(AuthenticationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new AuthenticationException(ex.getLocalizedMessage());
         }
         boolean authenticated = false;
-        if (secureUserPassword != null && secureUserPassword.equalsIgnoreCase(userEntity.getEPassword())) {
-            if (userName != null && userName.equalsIgnoreCase(userEntity.getUserName())) {
+        if (secureUserPassword != null && secureUserPassword.equalsIgnoreCase(userProfile.getEPassword())) {
+            if (userName != null && userName.equalsIgnoreCase(userProfile.getUserName())) {
                 authenticated = true;
             }
         }
         if (!authenticated) {
             throw new AuthenticationException("Authentication failed");
         }
-       
-        return userProfile;
+
+        return this.issueNewAuthorisedTokenForUser(userProfile);
     }
 
     public UserProfileDto resetSecurityCridentials(UserProfileDto userProfile)  throws UserServiceException {
-        // Generate salt
         String salt = authenticationUtil.generateSalt(AuthConstant.USER_IDENTIFICATION_SALT_LENGTH);
-        // Generate secure user password 
         String secureUserPassword = null;
         try {
             secureUserPassword = authenticationUtil.generateSecurePassword(userProfile.getPassword(), salt);
@@ -56,36 +54,91 @@ public class AuthenticationService {
 
         userProfile.setSalt(salt);
         userProfile.setEPassword(secureUserPassword);
-        UserProfileEntity userEntity = new UserProfileEntity();
-        // Update to database
-        userProfile.updateUserProfile();
+        //userProfile.updateUserProfile();
         return userProfile;
     }
 
-    public String issueSecureToken(UserProfileDto userProfile) throws AuthenticationException {
-        String returnValue = null;
-        // Get salt but only part of it
-        String newSaltAsPostfix = userProfile.getSalt();
-        String accessTokenMaterial = userProfile.getUserId() + newSaltAsPostfix;
-        byte[] encryptedAccessToken = null;
+    public synchronized UserProfileEntity setUserSignature(UserProfileEntity userProfileEntity) throws UserServiceException {
+        String salt = authenticationUtil.generateSalt(AuthConstant.USER_SIGNATURE_SALT_LENGTH);
+        System.out.println("salt    : " + salt);
+        String userSignature ; 
         try {
-            encryptedAccessToken = authenticationUtil.encrypt(userProfile.getEPassword(), accessTokenMaterial);
-        } catch (InvalidKeySpecException ex) {
-            // Logger.getLogger(AuthenticationServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new AuthenticationException("Faled to issue secure access token");
+            userSignature = salt.substring(0 , ( AuthConstant.USER_SIGNATURE_SALT_LENGTH / 2 )) 
+            + authenticationUtil.SEPARTOR + userProfileEntity.getUserId() + "" + authenticationUtil.SEPARTOR 
+            + salt.substring( ( AuthConstant.USER_SIGNATURE_SALT_LENGTH / 2 ) , AuthConstant.USER_SIGNATURE_SALT_LENGTH ) ;
+        } catch (Exception e) {
+            throw new UserServiceException(e.getLocalizedMessage());
         }
-        String encryptedAccessTokenBase64Encoded = Base64.getEncoder().encodeToString(encryptedAccessToken);
-        // Split token into equal parts
-        int tokenLength = encryptedAccessTokenBase64Encoded.length();
-        String tokenToSaveToDatabase = encryptedAccessTokenBase64Encoded.substring(0, tokenLength / 2);
-        returnValue = encryptedAccessTokenBase64Encoded.substring(tokenLength / 2, tokenLength);
+        System.out.println("userSignature    : " + userSignature);
+        userProfileEntity.setUserSignature(userSignature);
 
-        // Access token added to the table
+        return userProfileEntity ;
+    }
 
-        // userProfile.setToken(tokenToSaveToDatabase);
-        // storeAccessToken(userProfile);
+    public synchronized UserProfileEntity setUserEmailToken(UserProfileEntity userProfileEntity) throws UserServiceException {
+        String salt = authenticationUtil.generateSalt(AuthConstant.USER_EMAIL_SALT_LENGTH);
+        System.out.println("salt    : " + salt);
+        String emailToken ; 
+        try {
+            emailToken = salt.substring(0 , ( AuthConstant.USER_EMAIL_SALT_LENGTH / 2 )) 
+            + authenticationUtil.SEPARTOR + userProfileEntity.getUserId() + "" + authenticationUtil.SEPARTOR 
+            + salt.substring( ( AuthConstant.USER_EMAIL_SALT_LENGTH / 2 ) , AuthConstant.USER_EMAIL_SALT_LENGTH ) ;
+        } catch (Exception e) {
+            throw new UserServiceException(e.getLocalizedMessage());
+        }
+        System.out.println("EmailToken    : " + emailToken);
+        userProfileEntity.setEmailUiqueToken(emailToken);
+
+        return userProfileEntity ;
+    }
+
+    public synchronized AuthenticationToken issueNewAuthorisedTokenForUser( UserProfileDto userProfileDto ) throws UserServiceException {
+
+        AuthenticationToken authenticationToken = new AuthenticationToken();
+        UserAuthToken userAuthToken = new UserAuthToken();
+        String salt = authenticationUtil.generateSalt(AuthConstant.USER_AUTH_TOKEN_SLAT_LENGTH);
+        System.out.println("salt    : " + salt);
+        Long cTime = DateUtil.getCurrentTime() ;
+        Long expiry = DateUtil.calculateDate( AuthConstant.AUTH_TOKEN_EXPIRY );
+        String authToken ;
+
+        try {
+            authToken = salt.substring(0 , ( AuthConstant.USER_AUTH_TOKEN_SLAT_LENGTH / 2 )) 
+            + authenticationUtil.SEPARTOR + cTime  + "" + authenticationUtil.SEPARTOR 
+            + salt.substring( ( AuthConstant.USER_AUTH_TOKEN_SLAT_LENGTH / 2 ) , AuthConstant.USER_AUTH_TOKEN_SLAT_LENGTH ) ;
+        } catch (Exception e) {
+            throw new UserServiceException(e.getLocalizedMessage());
+        }
+
+        userAuthToken.setUserID( userProfileDto.getUserId() );
+        userAuthToken.setAuthToken(authToken);
+        userAuthToken.setExpiryDate( expiry );
+        userAuthToken.setDomainID(new Long(0));
+        userAuthToken.setIsLive( userAuthToken.ENABLED );
+        userAuthToken.setCreatedDate(cTime);
+        userAuthToken.setUpdatedDate(cTime);
+        try{
+            userProfileDto.saveUserAuthToken(userAuthToken);
+        }catch(Exception e){
+        	e.printStackTrace();
+            throw new UserServiceException(e.getLocalizedMessage());
+        }
+
+        authenticationToken.setUserSignature(userProfileDto.getUserSignature());
+        authenticationToken.setAuthToken(authToken);
+        return authenticationToken ;
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            UserProfileDto userProfileDto = new UserProfileDto("sharoonpaul808@gmail.com");
+            AuthenticationService authuS = new AuthenticationService();
+            authuS.setUserSignature(userProfileDto.getUserProfileEntity());
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
         
-        return returnValue;
     }
 
 }

@@ -5,8 +5,8 @@ import com.sarigama.security.authentication.AuthenticationService;
 import com.sarigama.security.authentication.exception.UserServiceException;
 import com.sarigama.security.db.UserProfileDB;
 import com.sarigama.security.dto.exception.UserAlreadyExcistException;
+import com.sarigama.security.entity.UserAuthToken;
 import com.sarigama.security.entity.UserProfileEntity;
-import com.sarigama.utils.DateUtil;
 
 public class UserProfileDto {
 
@@ -21,12 +21,16 @@ public class UserProfileDto {
     }
 
     public UserProfileDto(String userName ) throws Exception{
-        this.getUserProfile(userName);
-        this.userProfileDB = new UserProfileDB() ;
-        this.authenticationService = new AuthenticationService();
+    	 this.userProfileDB = new UserProfileDB() ;
+         this.authenticationService = new AuthenticationService();
+    	this.getUserProfile(userName);
     }
 
-    public UserProfileEntity getUserProfile(String userName) throws Exception{
+    public UserProfileEntity getUserProfileEntity(){
+        return this.userProfileEntity ;
+    }
+    
+    public UserProfileEntity getUserProfile(String userName) throws DBException{
         this.userProfileEntity = this.userProfileDB.getUserProfile(userName);
         return this.userProfileEntity ;
     }
@@ -55,6 +59,10 @@ public class UserProfileDto {
     public void generateUserProfile() throws UserServiceException{
         this.authenticationService.resetSecurityCridentials(this);
     } 
+
+    public void saveUserAuthToken( UserAuthToken userAuthToken ) throws DBException{
+        this.userProfileDB.saveUserAuthToken(userAuthToken);
+    }
 
     /**
      * @return Long return the userId
@@ -102,7 +110,7 @@ public class UserProfileDto {
      * @return String return the ePassword
      */
     public String getEPassword() {
-        return this.getEPassword();
+        return this.userProfileEntity.getEPassword();
     }
 
     /**
@@ -180,6 +188,20 @@ public class UserProfileDto {
      */
     public void setIsLive(int isLive) {
         this.userProfileEntity.setIsLive(isLive);;
+    }
+
+     /**
+     * @return String return the userSignature
+     */
+    public String getUserSignature() {
+        return this.userProfileEntity.getUserSignature();
+    }
+
+    /**
+     * @param userSignature the userSignature to set
+     */
+    public void setUserSignature(String userSignature) {
+        this.userProfileEntity.setUserSignature(userSignature);
     }
 
     public static void main(String[] args) {

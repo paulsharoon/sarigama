@@ -17,4 +17,8 @@
         <unique-value-column>PROFILE_ID</unique-value-column>
     </table>
 
+    <table name="A_AUTH_CREDENTIALS">
+        <unique-value-column>AUTH_CREDENTIALS_ID</unique-value-column>
+    </table>
+
 </unique-value-configuration>

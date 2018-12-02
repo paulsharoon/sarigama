@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import com.sarigama.db.ConnectionFactory;
 import com.sarigama.db.exception.DBException;
 import com.sarigama.db.uniquekey.UniqueValueContainer;
+import com.sarigama.security.authentication.AuthenticationService;
+import com.sarigama.security.entity.UserAuthToken;
 import com.sarigama.security.entity.UserProfileEntity;
 import com.sarigama.utils.DateUtil;
 
@@ -28,6 +30,9 @@ public class UserProfileDB extends ConnectionFactory {
             sqlstring += " VALUES ( ? , ? , ? , ? , ? , ?)" ;
             Long USER_ID = UniqueValueContainer.getNextUniqueValue(tableName);
             userProfile.setUserId(USER_ID);
+            AuthenticationService authenticationService = new AuthenticationService();
+            authenticationService.setUserSignature(userProfile);
+            authenticationService.setUserEmailToken(userProfile);
             this.openConnection();
             Long currentTime = DateUtil.getCurrentTime() ;
             preparedStatement =  this.connection.prepareStatement( sqlstring );
@@ -44,7 +49,8 @@ public class UserProfileDB extends ConnectionFactory {
                 Long IDENTIFICATION_ID = saveUserIdentification(userProfile) ;
                 Long PROFILE_ID = saveUserProfileInfo(userProfile) ;
             } catch (Exception e) {
-               
+
+                new DBException("" + e.getMessage());
             }
         } catch (Exception e) {
             throw new DBException("" + e.getMessage());
@@ -72,14 +78,13 @@ public class UserProfileDB extends ConnectionFactory {
             String sqlstring = "INSERT INTO " + tableName + " (  AUTH_ID  ,USER_ID  ,AUTH_SALT  ,USER_SIGNATURE  ,USER_EMAIL_UNIQUE_TOKEN  ,CREATED_DATE  ,UPDATED_DATE   ) " ;
             sqlstring += " VALUES ( ? , ? , ? , ? , ? , ? , ?)" ;
             AUTH_ID = UniqueValueContainer.getNextUniqueValue(tableName);
-            //this.openConnection();
             Long currentTime = DateUtil.getCurrentTime() ;
             preparedStatement =  this.connection.prepareStatement( sqlstring );
             preparedStatement.setLong(1, AUTH_ID );
             preparedStatement.setLong(2, userProfile.getUserId());
             preparedStatement.setString(3, userProfile.getSalt());
-            preparedStatement.setString(4, "" );
-            preparedStatement.setString(5, "" );
+            preparedStatement.setString(4, userProfile.getUserSignature() );
+            preparedStatement.setString(5, userProfile.getEmailUiqueToken() );
             preparedStatement.setLong(6, currentTime );
             preparedStatement.setLong(7, currentTime );
 
@@ -177,7 +182,7 @@ public class UserProfileDB extends ConnectionFactory {
         ResultSet resultSet = null ;
         try {
             String sqlString = "SELECT A_USER.USER_ID , A_USER.USER_NAME , A_USER.EMAIL , A_USER.IS_LIVE , " ;
-            sqlString += " A_SECURITY.AUTH_SALT , A_SECURITY.USER_EMAIL_UNIQUE_TOKEN , A_IDENTIFICATION.IDENTIFICATION_KEY " ;
+            sqlString += " A_SECURITY.AUTH_SALT , A_SECURITY.USER_EMAIL_UNIQUE_TOKEN , A_SECURITY.USER_SIGNATURE , A_IDENTIFICATION.IDENTIFICATION_KEY " ;
             sqlString += " FROM A_USER LEFT JOIN A_SECURITY ON A_USER.USER_ID = A_SECURITY.USER_ID " ;
             sqlString += " LEFT JOIN A_IDENTIFICATION ON A_USER.USER_ID = A_IDENTIFICATION.USER_ID " ;
             sqlString += " WHERE A_USER.USER_NAME = ? AND A_IDENTIFICATION.IS_LIVE = 1 ;" ;
@@ -194,8 +199,8 @@ public class UserProfileDB extends ConnectionFactory {
                 userProfileEntity.setIsLive( resultSet.getInt("A_USER.IS_LIVE")) ;
                 userProfileEntity.setSalt( resultSet.getString("A_SECURITY.AUTH_SALT")) ;
                 userProfileEntity.setEmailUiqueToken( resultSet.getString("A_SECURITY.USER_EMAIL_UNIQUE_TOKEN")) ;
+                userProfileEntity.setUserSignature( resultSet.getString("A_SECURITY.USER_SIGNATURE")) ;
                 userProfileEntity.setEPassword( resultSet.getString("A_IDENTIFICATION.IDENTIFICATION_KEY")) ;
-
             }
 
         } catch (Exception e) {
@@ -212,6 +217,45 @@ public class UserProfileDB extends ConnectionFactory {
         }
 
         return userProfileEntity;
+    }
+
+    public synchronized Long saveUserAuthToken(UserAuthToken userAuthToken) throws DBException{
+        Long AUTH_CREDENTIAL_ID = null ;
+        PreparedStatement preparedStatement = null  ;
+        try {
+           
+            String tableName = "A_AUTH_CREDENTIALS" ;
+            String sqlstring = "INSERT INTO " + tableName + " (  AUTH_CREDENTIALS_ID  , USER_ID  ,AUTH_TOKEN  ,EXPIRY_DATE  ,DOMAIN_ID  , IS_LIVE  ,CREATED_DATE  ,UPDATED_DATE  ) " ;
+            sqlstring += " VALUES ( ? , ? , ? , ? , ? , ? , ? , ? )" ;
+            AUTH_CREDENTIAL_ID = UniqueValueContainer.getNextUniqueValue(tableName);
+            Long currentTime = DateUtil.getCurrentTime() ;
+            this.openConnection();
+            preparedStatement =  this.connection.prepareStatement( sqlstring );
+
+            preparedStatement.setLong(1, AUTH_CREDENTIAL_ID );
+            preparedStatement.setLong(2, userAuthToken.getUserID());
+            preparedStatement.setString(3, userAuthToken.getAuthToken());
+            preparedStatement.setLong(4, userAuthToken.getExpiryDate() );
+            preparedStatement.setLong(5, userAuthToken.getDomainID() );
+            preparedStatement.setInt(6, userAuthToken.getIsLive() );
+            preparedStatement.setLong(7, userAuthToken.getCreatedDate() );
+            preparedStatement.setLong(8, userAuthToken.getUpdatedDate() );
+
+            preparedStatement.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DBException(e.getMessage());
+        }finally{
+            try {
+                if (null != preparedStatement) { preparedStatement.close() ; } 
+                this.closeConnection();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+        }
+
+        return AUTH_CREDENTIAL_ID ;
     }
 
     public static void main(String[] args) {

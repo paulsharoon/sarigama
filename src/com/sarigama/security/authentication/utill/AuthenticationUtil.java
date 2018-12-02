@@ -14,7 +14,8 @@ import javax.crypto.spec.PBEKeySpec;
 public class AuthenticationUtil {
     
     private static final Random RANDOM = new SecureRandom();
-    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWYZabcdefghijklmnopqrstuvwxyz";
+    public static final String SEPARTOR = "XX" ;
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
 
@@ -62,28 +63,11 @@ public class AuthenticationUtil {
  
     public static void main(String[] args) {
         AuthenticationUtil authenticationUtil = new AuthenticationUtil() ;
-        String password = "Sharoon808%^&" ;
-        String salt = authenticationUtil.generateSalt(30);
-        System.out.println( "salt  : " +  salt );
-        String sPassword = null ;
         try {
-            sPassword = authenticationUtil.generateSecurePassword(password , salt);
-        } catch (InvalidKeySpecException e) {
+            System.out.println( authenticationUtil.generateSecretKey().toString() );
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        System.out.println( "sPassword  : " +  sPassword );
-
-        try {
-            sPassword = authenticationUtil.generateSecurePassword(password , salt);
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println( "sPassword  : " +  sPassword );
-
-
-        salt = authenticationUtil.generateSalt(30);
-        System.out.println( "salt  : " +  salt );
     }
 }

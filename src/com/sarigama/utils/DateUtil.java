@@ -6,8 +6,14 @@ public class DateUtil {
 
     public static Long getCurrentTime(){
         Calendar calendar = Calendar.getInstance(); 
-        Long currentTime = calendar.getTimeInMillis();
 
-        return currentTime ;
+        return calendar.getTimeInMillis();
+    }
+
+    public static Long calculateDate(int days){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, days);
+
+        return calendar.getTimeInMillis();
     }
 }

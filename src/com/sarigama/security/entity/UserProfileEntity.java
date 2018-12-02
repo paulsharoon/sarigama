@@ -17,6 +17,7 @@ public class UserProfileEntity {
 	private String password ;
     private String salt ;
     private Long passwordExpiry ;
+    private String userSignature ;
     private String emailUiqueToken ;
     private int isLive ; 
 
@@ -144,6 +145,21 @@ public class UserProfileEntity {
      */
     public void setIsLive(int isLive) {
         this.isLive = isLive;
+    }
+
+
+    /**
+     * @return String return the userSignature
+     */
+    public String getUserSignature() {
+        return userSignature;
+    }
+
+    /**
+     * @param userSignature the userSignature to set
+     */
+    public void setUserSignature(String userSignature) {
+        this.userSignature = userSignature;
     }
 
 }
